@@ -1,54 +1,70 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('help')
-        .setDescription('Get help with bot commands'),
-    async execute(interaction) {
-        const embed = new EmbedBuilder()
-            .setColor(0x5865F2)
-            .setTitle('Bot Help Guide')
-            .setDescription('Here are all available commands and how to use them:')
-            .addFields(
-                {
-                    name: '/bypass <url>',
-                    value: 'Bypass an ad link. Provide the full URL of the ad link you want to bypass.\n**Example:** `/bypass https://linkvertise.com/example`',
-                    inline: false
-                },
-                {
-                    name: '/set-autobypass <enabled>',
-                    value: 'Enable or disable automatic bypassing in the current channel. When enabled, the bot will automatically detect and bypass supported ad links.\n**Example:** `/set-autobypass enabled:true`',
-                    inline: false
-                },
-                {
-                    name: '/view-supported',
-                    value: 'Display a list of all supported ad link services that can be bypassed.',
-                    inline: false
-                },
-                {
-                    name: '/set-panel',
-                    value: 'Create a control panel embed with quick access to bot features and stats. Requires Manage Channels permission.',
-                    inline: false
-                },
-                {
-                    name: '/overview',
-                    value: 'View detailed bot statistics including total bypasses, active servers, and uptime.',
-                    inline: false
-                },
-                {
-                    name: '/faq',
-                    value: 'View frequently asked questions and their answers.',
-                    inline: false
-                },
-                {
-                    name: '/credits',
-                    value: 'View bot credits and acknowledgments.',
-                    inline: false
-                }
-            )
-            .setTimestamp()
-            .setFooter({ text: 'Need more help? Check /faq' });
+  data: new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('Displays a list of all commands and their descriptions.'),
+    
+  async execute(interaction) {
+    const embed = new EmbedBuilder()
+      .setColor(0x2B2D31)
+      .setTitle('Bypass Bot Command Reference')
+      .setDescription(
+        'Below is an overview of all available commands and their functions.\n' +
+        'Use these to interact with the bot efficiently and securely.'
+      )
+      .addFields(
+        {
+          name: '/bypass <url>',
+          value:
+            'Bypasses a supported advertisement or redirect link.\n' +
+            'Provide the full URL to process.\n' +
+            '**Example:** `/bypass https://linkvertise.com/example`',
+          inline: false
+        },
+        {
+          name: '/set-autobypass <enabled>',
+          value:
+            'Enables or disables automatic link bypassing in the current channel.\n' +
+            'When enabled, supported links are processed automatically.\n' +
+            '**Example:** `/set-autobypass enabled:true`',
+          inline: false
+        },
+        {
+          name: '/view-supported',
+          value:
+            'Displays a list of all supported link services compatible with the bypass system.',
+          inline: false
+        },
+        {
+          name: '/set-panel',
+          value:
+            'Creates an interactive control panel embed that provides quick access to core bot features and system statistics.\n' +
+            'Requires **Manage Channels** permission.',
+          inline: false
+        },
+        {
+          name: '/overview',
+          value:
+            'Shows detailed statistics including total bypasses, uptime, and server count.',
+          inline: false
+        },
+        {
+          name: '/faq',
+          value:
+            'Displays answers to frequently asked questions regarding the bot and its functionality.',
+          inline: false
+        },
+        {
+          name: '/credits',
+          value:
+            'Displays bot credits and acknowledgments for contributors and developers.',
+          inline: false
+        }
+      )
+      .setFooter({ text: 'Bypass Bot • Use /faq for more information' })
+      .setTimestamp();
 
-        await interaction.reply({ embeds: [embed] });
-    },
+    await interaction.reply({ embeds: [embed] });
+  },
 };
