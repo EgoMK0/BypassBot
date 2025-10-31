@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,7 +9,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor(0x5865F2)
             .setTitle('Bypass Bot Control Panel')
-            .setDescription('Welcome to the Bypass Bot control panel. Use the commands below to get started.')
+            .setDescription('Welcome to the Bypass Bot control panel. Click the button below to bypass a link.')
             .addFields(
                 { name: '/bypass', value: 'Bypass an ad link instantly', inline: true },
                 { name: '/set-autobypass', value: 'Toggle auto-bypass for this channel', inline: true },
@@ -24,6 +24,14 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: 'Bypass Bot - Ad Link Bypassing Made Easy' });
 
-        await interaction.reply({ embeds: [embed] });
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('bypass_button')
+                    .setLabel('Bypass Link')
+                    .setStyle(ButtonStyle.Primary)
+            );
+
+        await interaction.reply({ embeds: [embed], components: [row] });
     },
 };

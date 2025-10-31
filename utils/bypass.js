@@ -2,10 +2,7 @@ const axios = require('axios');
 
 async function bypassWithTrw(url) {
     try {
-        const response = await axios.get(`https://api.bypass.vip/bypass?url=${encodeURIComponent(url)}`, {
-            headers: {
-                'Authorization': process.env.TRW_API_KEY || ''
-            },
+        const response = await axios.get(`https://trw.lat/api/bypass?url=${encodeURIComponent(url)}`, {
             timeout: 10000
         });
         
@@ -24,13 +21,7 @@ async function bypassWithTrw(url) {
 
 async function bypassWithAce(url) {
     try {
-        const response = await axios.post('https://api.acebypass.com/bypass', {
-            url: url
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.ACE_API_KEY || ''}`,
-                'Content-Type': 'application/json'
-            },
+        const response = await axios.get(`http://ace-bypass.com/api/bypass?url=${encodeURIComponent(url)}&apikey=${process.env.ACE_API_KEY || ''}`, {
             timeout: 10000
         });
         

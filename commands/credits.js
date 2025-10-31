@@ -11,23 +11,18 @@ module.exports = {
             .setDescription('Thanks to everyone who made this bot possible:')
             .addFields(
                 {
-                    name: 'Bot Developer',
-                    value: 'Created with Discord.js',
+                    name: 'Main Developers',
+                    value: 'xohus\nLazy Devs',
+                    inline: false
+                },
+                {
+                    name: 'Helper',
+                    value: 'zeus',
                     inline: false
                 },
                 {
                     name: 'APIs Used',
-                    value: 'trw.lat - Primary bypass API\nace API - Fallback bypass API',
-                    inline: false
-                },
-                {
-                    name: 'Libraries',
-                    value: 'discord.js - Discord bot framework\naxios - HTTP client\ndotenv - Environment configuration',
-                    inline: false
-                },
-                {
-                    name: 'Special Thanks',
-                    value: 'Thanks to the Discord.js community and all the users who support this bot.',
+                    value: 'trw.lat\nace API',
                     inline: false
                 }
             )
