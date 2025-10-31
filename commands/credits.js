@@ -7,27 +7,25 @@ module.exports = {
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setColor(0x5865F2)
-            .setTitle('Credits & Acknowledgments')
-            .setDescription('Thanks to everyone who made this bot possible:')
+            .setTitle('Credits')
             .addFields(
                 {
-                    name: 'Main Developers',
-                    value: 'xohus\nLazy Devs',
-                    inline: false
+                    name: 'Developer',
+                    value: 'Xohus',
+                    inline: true
                 },
                 {
                     name: 'Helper',
                     value: 'zeus',
-                    inline: false
+                    inline: true
                 },
                 {
-                    name: 'APIs Used',
-                    value: 'trw.lat\nace API',
-                    inline: false
+                    name: 'APIs',
+                    value: 'trw.lat, ace API',
+                    inline: true
                 }
             )
-            .setTimestamp()
-            .setFooter({ text: 'Bypass Bot v1.0.0' });
+            .setTimestamp();
 
         await interaction.reply({ embeds: [embed] });
     },

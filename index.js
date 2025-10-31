@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, Collection, Events, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, Events, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -94,11 +94,34 @@ client.on(Events.InteractionCreate, async interaction => {
                     `**Original URL:** ${url}\n\n**Bypassed URL:** ${result.url}\n\n**API Used:** ${result.api}`
                 );
                 
+                const row = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`copy_modal_${Date.now()}`)
+                            .setLabel('Copy Link')
+                            .setStyle(ButtonStyle.Primary)
+                    );
+                
                 try {
-                    await interaction.user.send({ embeds: [embed] });
+                    const dmMessage = await interaction.user.send({ embeds: [embed], components: [row] });
+                    
+                    const dmCollector = dmMessage.createMessageComponentCollector({ time: 60000 });
+                    dmCollector.on('collect', async i => {
+                        await i.reply({ content: `\`${result.url}\``, ephemeral: true });
+                    });
+                    
                     await interaction.editReply({ content: 'Bypass successful! Check your DMs for the result.', ephemeral: true });
                 } catch (error) {
-                    await interaction.editReply({ embeds: [embed], ephemeral: true });
+                    const fallbackResponse = await interaction.editReply({ embeds: [embed], components: [row], ephemeral: true });
+                    
+                    const fallbackCollector = fallbackResponse.createMessageComponentCollector({ time: 60000 });
+                    fallbackCollector.on('collect', async i => {
+                        if (i.user.id === interaction.user.id) {
+                            await i.reply({ content: `\`${result.url}\``, ephemeral: true });
+                        } else {
+                            await i.reply({ content: 'This button is not for you.', ephemeral: true });
+                        }
+                    });
                 }
             } else {
                 const embed = createErrorEmbed('Bypass Failed', 
@@ -131,11 +154,21 @@ client.on(Events.MessageCreate, async message => {
                     const result = await bypassLink(link);
                     
                     let embed;
+                    let row;
+                    
                     if (result.success) {
                         client.stats.totalBypasses++;
                         embed = createSuccessEmbed('Auto-Bypass Successful', 
                             `**Original URL:** ${link}\n\n**Bypassed URL:** ${result.url}\n\n**API Used:** ${result.api}`
                         );
+                        
+                        row = new ActionRowBuilder()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`copy_auto_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
+                                    .setLabel('Copy Link')
+                                    .setStyle(ButtonStyle.Primary)
+                            );
                     } else {
                         embed = createErrorEmbed('Auto-Bypass Failed', 
                             `**Original URL:** ${link}\n\n**Error:** ${result.error}\n\nThe link could not be bypassed.`
@@ -143,11 +176,27 @@ client.on(Events.MessageCreate, async message => {
                     }
                     
                     try {
-                        await message.author.send({ embeds: [embed] });
+                        const dmMessage = await message.author.send({ embeds: [embed], components: row ? [row] : [] });
+                        
+                        if (result.success && row) {
+                            const dmCollector = dmMessage.createMessageComponentCollector({ time: 60000 });
+                            dmCollector.on('collect', async i => {
+                                await i.reply({ content: `\`${result.url}\``, ephemeral: true });
+                            });
+                        }
                     } catch (error) {
                         console.error('Could not DM user, posting in channel instead:', error);
                         try {
-                            await message.reply({ embeds: [embed] });
+                            const replyMessage = await message.reply({ embeds: [embed], components: row ? [row] : [] });
+                            
+                            if (result.success && row) {
+                                const replyCollector = replyMessage.createMessageComponentCollector({ time: 60000 });
+                                replyCollector.on('collect', async i => {
+                                    if (i.user.id === message.author.id) {
+                                        await i.reply({ content: `\`${result.url}\``, ephemeral: true });
+                                    }
+                                });
+                            }
                         } catch (replyError) {
                             console.error('Could not send reply:', replyError);
                             allResultsDelivered = false;

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { bypassLink } = require('../utils/bypass');
 const { createSuccessEmbed, createErrorEmbed } = require('../utils/embeds');
 
@@ -27,7 +27,23 @@ module.exports = {
             const embed = createSuccessEmbed('Bypass Successful', 
                 `**Original URL:** ${url}\n\n**Bypassed URL:** ${result.url}\n\n**API Used:** ${result.api}`
             );
-            await interaction.editReply({ embeds: [embed] });
+            
+            const row = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`copy_${Date.now()}`)
+                        .setLabel('Copy Link')
+                        .setStyle(ButtonStyle.Primary)
+                );
+            
+            const response = await interaction.editReply({ embeds: [embed], components: [row] });
+            
+            const collector = response.createMessageComponentCollector({ time: 60000 });
+            collector.on('collect', async i => {
+                if (i.user.id === interaction.user.id) {
+                    await i.reply({ content: `\`${result.url}\``, ephemeral: true });
+                }
+            });
         } else {
             const embed = createErrorEmbed('Bypass Failed', 
                 `Could not bypass the provided link.\n\n**Error:** ${result.error}\n\nMake sure the link is supported and try again.`
