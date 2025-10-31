@@ -1,0 +1,17 @@
+{
+  "name": "discord-bypass-bot",
+  "version": "1.0.0",
+  "description": "Discord bot that bypasses ad links using trw.lat and ace APIs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["discord", "bot", "bypass"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1"
+  }
+}
