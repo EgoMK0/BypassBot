@@ -64,8 +64,10 @@ client.on(Events.MessageCreate, async message => {
         
         if (links && links.length > 0) {
             const { bypassLink } = require('./utils/bypass');
+            const { isAdLink } = require('./utils/supportedServices');
+            
             for (const link of links) {
-                if (link.includes('linkvertise') || link.includes('lootdest') || link.includes('lootlinks')) {
+                if (isAdLink(link)) {
                     const result = await bypassLink(link);
                     if (result.success) {
                         await message.reply({
